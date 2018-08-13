@@ -104,10 +104,17 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id", weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    } else if (getActivity() instanceof WeatherActivity){
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weatherId);
+                    }
                 }
             }
         });
@@ -127,7 +134,7 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 查询全国所有的省份，优先查询数据库，如果没有则到服务器查询
      */
-    private void queryProvinces() {
+    public void queryProvinces() {
         titleText.setText("中国");
         backButton.setVisibility(View.GONE);
         provinceList = LitePal.findAll(Province.class);
@@ -150,7 +157,7 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 查询选中省内所有的市，优先查询数据库，如果没有则到服务器查询
      */
-    private void queryCities() {
+    public void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
         cityList = LitePal.where("provinceid = ?", String.valueOf(
@@ -173,7 +180,7 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 查询选中市内所有的县，优先查询数据库，如果没有则去服务器查询
      */
-    private void queryCounties() {
+    public void queryCounties() {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
         countyList = LitePal.where("cityid=?", String.valueOf(selectedCity.getId())).
@@ -200,7 +207,7 @@ public class ChooseAreaFragment extends Fragment {
      * @param address:地址
      * @param type:传入的类型（省市县）
      */
-    private void queryFromServer(String address, final String type) {
+    public void queryFromServer(String address, final String type) {
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
@@ -248,7 +255,7 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 显示进度对话框
      */
-    private void showProgressDialog() {
+    public void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("正在加载...");
@@ -260,7 +267,7 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 关闭进度对话框
      */
-    private void closeProgressDialog() {
+    public void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
