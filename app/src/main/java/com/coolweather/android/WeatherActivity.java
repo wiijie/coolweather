@@ -2,7 +2,6 @@ package com.coolweather.android;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -87,22 +86,24 @@ public class WeatherActivity extends AppCompatActivity {
         weatherInfoText = findViewById(R.id.weather_info_text);
         forecastLayout = findViewById(R.id.forecast_layout);
         aqiText = findViewById(R.id.aqi_text);
-        pm25Text = findViewById(R.id.pm25_text);
+        pm25Text = findViewById(R.id.pm25_text1);
         comfortText = findViewById(R.id.comfort_text);
         carWashText = findViewById(R.id.car_wash_text);
         sportText = findViewById(R.id.sport_text);
         bingPicImg = findViewById(R.id.bing_pic_img);
         swipeRefresh = findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         drawerLayout = findViewById(R.id.drawer_layout);
         navButton = findViewById(R.id.nav_button);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
         final String weatherId;
         if (weatherString != null) {
             //有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
             weatherId = weather.basic.weatherId;
+//            weatherLayout.setVisibility(View.INVISIBLE);
+//            requestWeather(weatherId);
             showWeatherInfo(weather);
         } else {
             //无缓存时去服务器查询天气

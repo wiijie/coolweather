@@ -85,7 +85,7 @@ public class AutoUpdateService extends Service {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseText = response.body().string();
-                    Weather weather1 = Utility.handleWeatherResponse(responseText);
+                    Weather weather = Utility.handleWeatherResponse(responseText);
                     if (weather != null && "ok".equals(weather.status)) {
                         SharedPreferences.Editor editor = PreferenceManager.
                                 getDefaultSharedPreferences(AutoUpdateService.this).edit();
